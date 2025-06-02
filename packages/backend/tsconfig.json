@@ -1,0 +1,27 @@
+
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true, // Generates .d.ts files in outDir, good for libraries
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",         // <--- IMPORTANT: Output directory for build
+    "baseUrl": "./",            // <--- Root for module resolution
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,  // Consider setting to true later for better code quality
+    "noImplicitAny": false,     // Consider setting to true later
+    "strictBindCallApply": false, // Consider setting to true later
+    "forceConsistentCasingInFileNames": true, // Good practice
+    "noFallthroughCasesInSwitch": true,    // Good practice
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "rootDir": "src" 
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts"] // Exclude test files from default compilation path
+}

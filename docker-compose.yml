@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./packages/backend
+      dockerfile: .docker/Dockerfile
+    container_name: twitter_clone_backend
+    ports:
+      - "3001:3001" # NestJS default port
+    depends_on:
+      - mongo
+    volumes:
+      - ./packages/backend/src:/usr/src/app/src # Hot-reloading for dev
+      - ./packages/backend/package.json:/usr/src/app/package.json
+      - ./packages/backend/pnpm-lock.yaml:/usr/src/app/pnpm-lock.yaml
+    env_file:
+      - ./packages/backend/.env # Make sure this file exists with MONGO_URI etc.
+    environment:
+      - NODE_ENV=development # Or production
+      - MONGO_URI=mongodb://mongo:27017/twitter_clone # Internal docker network
+      - JWT_SECRET=YOUR_VERY_SECRET_KEY_CHANGE_ME # Change this! MTODO: Get real token
+      - JWT_EXPIRATION=3600s # 1 hour
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./packages/frontend
+      dockerfile: .docker/Dockerfile
+    container_name: twitter_clone_frontend
+    ports:
+      - "3000:80" # Serve from Nginx port 80, map to host 3000
+    depends_on:
+      - backend
+    volumes:
+      - ./packages/frontend/src:/usr/src/app/src # Hot-reloading for dev (if using dev server)
+      - ./packages/frontend/public:/usr/src/app/public
+      - ./packages/frontend/package.json:/usr/src/app/package.json
+      - ./packages/frontend/pnpm-lock.yaml:/usr/src/app/pnpm-lock.yaml
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:3001/api # URL backend is accessible from browser
+    restart: unless-stopped
+
+volumes:
+  mongo_data:

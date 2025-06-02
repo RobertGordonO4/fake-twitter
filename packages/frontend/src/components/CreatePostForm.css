@@ -1,0 +1,65 @@
+.create-post-form {
+  background-color: #f5f8fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #e1e8ed;
+}
+
+.create-post-form h3 {
+  margin-top: 0;
+  color: #14171a;
+}
+
+.create-post-form textarea {
+  width: calc(100% - 22px); /* Account for padding and border */
+  padding: 10px;
+  border: 1px solid #ccd6dd;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 1.4;
+  resize: vertical; /* Allow vertical resize, disable horizontal */
+  min-height: 80px;
+  margin-bottom: 10px;
+}
+
+.create-post-form .form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.create-post-form .form-footer span {
+  font-size: 0.9em;
+  color: #657786;
+}
+
+.create-post-form button[type="submit"] {
+  background-color: #1da1f2;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px; /* More Twitter-like */
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.create-post-form button[type="submit"]:hover {
+  background-color: #0c85d0;
+}
+
+.create-post-form button[type="submit"]:disabled {
+  background-color: #a0d3f0; /* Lighter blue when disabled */
+  cursor: not-allowed;
+}
+
+.create-post-form .error-message {
+  color: red;
+  background-color: #ffebee;
+  border: 1px solid red;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  text-align: left; /* Align left for form errors */
+}
