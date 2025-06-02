@@ -1,16 +1,10 @@
-// packages/backend/tsconfig.build.json
 {
-  "extends": "./tsconfig.json", // Inherits settings from the main tsconfig.json
+  "extends": "./tsconfig.json",
   "exclude": [
     "node_modules",
-    "dist", // Important to exclude the output directory itself
-    "test", // If you have a top-level 'test' folder for e2e tests
+    "dist",
+    "test",
     "**/*.spec.ts",
     "**/*.e2e-spec.ts"
-    // Add any other development-specific files or folders you want to exclude
-    // from the production build.
   ]
-  // You generally don't need to repeat compilerOptions here unless you
-  // want to override something specifically for the build, which is rare.
-  // The `outDir` and `rootDir` from the extended tsconfig.json will be used.
 }
