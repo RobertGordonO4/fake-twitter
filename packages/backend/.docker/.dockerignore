@@ -1,0 +1,6 @@
+node_modules
+dist # Or whatever your build output directory is, if you build locally first (usually not recommended for this pattern)
+npm-debug.log
+.git
+.DS_Store
+# Add any other files/folders you don't want in the Docker image or build context

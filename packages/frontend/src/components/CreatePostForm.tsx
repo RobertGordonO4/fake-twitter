@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
-import { getPostsApi, CreatePostDto } from '../services/apiClient';
+import { postsApiClient, CreatePostDto } from '../services/apiClient';
 import { useAuth } from '../contexts/AuthContext';
 import './CreatePostForm.css';
 
-
 interface CreatePostFormProps {
-  onPostCreated: () => void; // Callback to refresh post list
+  onPostCreated: () => void;
 }
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ onPostCreated }) => {
   const [content, setContent] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const { isAuthenticated, token } = useAuth();
-  const postsApi = getPostsApi();
-
+  const { isAuthenticated } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,10 +23,9 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onPostCreated }) => {
     const createPostDto: CreatePostDto = { content };
 
     try {
-      // The API client should handle attaching the token
-      await postsApi.postsControllerCreate(createPostDto);
-      setContent(''); // Clear input
-      onPostCreated(); // Trigger refresh
+      await postsApiClient.postsControllerCreate(createPostDto);
+      setContent('');
+      onPostCreated();
     } catch (err: any) {
       console.error('Failed to create post:', err);
       setError(err.response?.data?.message || 'Failed to create post. Please try again.');

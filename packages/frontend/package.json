@@ -24,7 +24,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "generate-api": "openapi-generator-cli generate -g typescript-axios -i http://localhost:3001/api-docs-json -o src/services/api --additional-properties=typescriptThreePlus=true,useES6=true,withInterfaces=true"
+    "generate-api": "openapi-generator-cli generate -g typescript-axios -i http://host.docker.internal:3001/api-docs-json -o /local/src/services/api --additional-properties=typescriptThreePlus=true,useES6=true,withInterfaces=true"
   },
   "eslintConfig": {
     "extends": [

@@ -1,10 +1,10 @@
-import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { User } from 'services/api/api';
+import { createContext, useState, useContext, ReactNode } from 'react';
+import { User } from '../services/apiClient';
 
 interface AuthContextType {
   token: string | null;
-  user: User | null; // You might want a simpler user object here
-  login: (token: string, userData?: User) => void;
+  user: User | null;
+  login: (token: string, userData: User) => void; // userData is now non-optional if always expected
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -15,16 +15,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [user, setUser] = useState<User | null>(() => {
     const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : null;
+    return storedUser ? JSON.parse(storedUser) as User : null;
   });
 
-  const login = (newToken: string, userData?: User) => {
+  const login = (newToken: string, userData: User) => { // userData is now non-optional
     localStorage.setItem('token', newToken);
     setToken(newToken);
-    if (userData) {
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-    }
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
   };
 
   const logout = () => {
@@ -33,12 +31,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(null);
     setUser(null);
   };
-  
-  const isAuthenticated = !!token;
 
-  useEffect(() => {
-    // Could add token validation here if needed
-  }, [token]);
+  const isAuthenticated = !!token;
 
   return (
     <AuthContext.Provider value={{ token, user, login, logout, isAuthenticated }}>

@@ -37,7 +37,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService)
   const port = configService.get<number>('PORT') || 3001
-  await app.listen(port)
+  await app.listen(port, '0.0.0.0')
   console.log(`Application is running on: ${await app.getUrl()}`)
   console.log(`Swagger UI available at ${await app.getUrl()}/api-docs`)
   console.log(`Swagger JSON available at ${await app.getUrl()}/api-docs-json`)

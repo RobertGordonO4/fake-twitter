@@ -1,6 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -8,10 +7,10 @@ import Navbar from './components/Navbar';
 import './App.css';
 
 // Helper for protected routes
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
-};
+// const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+//   const { isAuthenticated } = useAuth();
+//   return isAuthenticated ? children : <Navigate to="/login" replace />;
+// };
 
 
 function AppContent() {

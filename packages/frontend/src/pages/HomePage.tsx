@@ -1,30 +1,27 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PostList from '../components/PostList';
 import CreatePostForm from '../components/CreatePostForm';
-import { getPostsApi, Post } from '../services/apiClient';
-import { useAuth } from '../contexts/AuthContext';
+import { postsApiClient, Post } from '../services/apiClient'; // Assuming CreatePostDto might be needed here or in child components
 import './HomePage.css';
 
 const HomePage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { token } = useAuth(); // To re-fetch if token changes, or for authenticated actions
-  const postsApi = getPostsApi();
 
   const fetchPosts = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await postsApi.postsControllerFindAll();
+      const response = await postsApiClient.postsControllerFindAll();
       setPosts(response.data);
     } catch (err: any) {
       console.error('Failed to fetch posts:', err);
-      setError(err.message || 'Could not load posts.');
+      setError(err.response?.data?.message || err.message || 'Could not load posts.');
     } finally {
       setIsLoading(false);
     }
-  }, []); // postsApi instance will be stable if base path and token retrieval are stable
+  }, []); // Dependency array is empty as postsApiClient instance is stable
 
   useEffect(() => {
     fetchPosts();
@@ -36,10 +33,10 @@ const HomePage: React.FC = () => {
 
   const handleLikePost = async (postId: string) => {
     try {
-      await postsApi.postsControllerLikePost(postId);
+      await postsApiClient.postsControllerLikePost(postId);
       fetchPosts(); // Re-fetch to update like count
-    } catch (err) {
-      console.error('Failed to like post:', err);
+    } catch (err: any) {
+      console.error('Failed to like post:', err.response?.data?.message || err.message);
       // You might want to show an error to the user
     }
   };
@@ -47,10 +44,10 @@ const HomePage: React.FC = () => {
   const handleDeletePost = async (postId: string) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
       try {
-        await postsApi.postsControllerRemove(postId);
+        await postsApiClient.postsControllerRemove(postId);
         fetchPosts(); // Re-fetch to update the list
-      } catch (err) {
-        console.error('Failed to delete post:', err);
+      } catch (err: any) {
+        console.error('Failed to delete post:', err.response?.data?.message || err.message);
         // Show error to user
       }
     }
@@ -62,6 +59,7 @@ const HomePage: React.FC = () => {
   return (
     <div className="home-page">
       <h1>Feed</h1>
+      {/* Pass postsApiClient or specific methods if CreatePostForm needs to make API calls directly */}
       <CreatePostForm onPostCreated={handlePostCreated} />
       <PostList posts={posts} onLikePost={handleLikePost} onDeletePost={handleDeletePost} />
     </div>
