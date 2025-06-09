@@ -1,0 +1,29 @@
+# Ignore Docker and Git files
+.git
+.dockerignore
+Dockerfile*
+docker-compose.yml
+docker-compose.override.yml
+
+# Ignore node_modules everywhere. This is the most important line!
+**/node_modules
+
+# Ignore local environment files
+.env
+*.env.local
+
+# Ignore build artifacts (they should be generated inside the container)
+**/dist
+**/build
+.next
+
+# Ignore logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore IDE and OS-specific files
+.vscode
+.idea
+.DS_Store
+Thumbs.db

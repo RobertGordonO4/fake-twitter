@@ -1,19 +1,4 @@
-// src/auth/dto/auth-response.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-
-export class AuthResponseDto {
-  @ApiProperty({
-    description: 'JWT access token for authentication.',
-    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-  })
-  accessToken: string;
-
-  @ApiProperty({
-    description: 'Authenticated user details.',
-    type: () => UserEntity, // Use your actual User entity/DTO class here
-  })
-  user: UserEntity; // Or whatever your User type/entity is
-}
 
 export class UserEntity {
   @ApiProperty({ example: '605c72ef2970e3001f5565a1', description: 'User unique ID' })
@@ -27,4 +12,17 @@ export class UserEntity {
   // email: string;
 
   // Make sure all properties you want in the API response have @ApiProperty()
+}
+export class AuthResponseDto {
+  @ApiProperty({
+    description: 'JWT access token for authentication.',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  accessToken: string;
+
+  @ApiProperty({
+    description: 'Authenticated user details.',
+    type: () => UserEntity, // Use your actual User entity/DTO class here
+  })
+  user: UserEntity; // Or whatever your User type/entity is
 }
