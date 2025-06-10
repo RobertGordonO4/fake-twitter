@@ -4,17 +4,21 @@ RUN npm install -g pnpm
 
 WORKDIR /usr/src/app
 
-# Copy all manifest files
+# Copy package management files
+COPY package.json .
 COPY pnpm-lock.yaml .
 COPY pnpm-workspace.yaml .
 COPY packages/backend/package.json ./packages/backend/
 COPY packages/frontend/package.json ./packages/frontend/
 
-# Install ALL dependencies for the entire workspace
-RUN pnpm install
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
-# Copy the entire monorepo source code into the image.
+# Copy source code (excluding node_modules due to .dockerignore)
 COPY . .
 
-# The CMD will now run the dev command directly.
+# Expose port
+EXPOSE 3000
+
+# Run the application
 CMD ["pnpm", "--filter", "frontend", "run", "dev"]
