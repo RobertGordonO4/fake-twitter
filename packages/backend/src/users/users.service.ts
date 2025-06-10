@@ -6,12 +6,12 @@ import { RegisterDto } from '../auth/dto/register.dto' // Reuse DTO for creation
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
 
   async create(registerDto: RegisterDto): Promise<UserDocument> {
     const newUser = new this.userModel({
       username: registerDto.username,
-      password: registerDto.password, // Hashing is handled by pre-save hook in schema
+      passwordHash: registerDto.password, // This will get hashed by the pre-save hook
     })
     return newUser.save()
   }

@@ -1,4 +1,4 @@
-// packages/frontend/src/services/apiClient.ts
+
 import {
   Configuration,
   PostsApi,
@@ -13,14 +13,16 @@ import {
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
-const getAccessToken = (): string | undefined => {
+// Function that dynamically gets the token each time it's called
+const getAccessToken = (): string => {
   const token = localStorage.getItem('token');
-  return token || undefined;
+  return token || ''; // Return empty string instead of null/undefined
 };
 
+// Create configuration with a function instead of a static value
 const apiConfiguration = new Configuration({
   basePath: API_BASE_URL,
-  accessToken: getAccessToken(),
+  accessToken: getAccessToken, // Pass the function itself, not the result
 });
 
 export const postsApiClient = new PostsApi(apiConfiguration);
@@ -39,7 +41,7 @@ export type {
 // This will allow the frontend to compile, but login/register won't work as expected.
 export interface User {
   // Define properties based on what your backend *should* send for a user
-  _id: string; // Or id
+  id: string; // Changed from _id to id to match your backend response
   username: string;
   // email?: string; etc.
 }

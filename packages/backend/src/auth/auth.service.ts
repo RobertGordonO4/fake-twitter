@@ -9,8 +9,8 @@ import { UserDocument } from '../users/schemas/user.schema'
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService
   ) {}
 
   async validateUser(
@@ -33,7 +33,7 @@ export class AuthService {
     }
     const payload = { username: user.username, sub: user._id.toString() } // _id from Mongoose
     return {
-      access_token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload),
       user: {
         // Send some user info back, exclude sensitive data
         id: user._id.toString(),
@@ -56,7 +56,7 @@ export class AuthService {
     const payload = { username: result.username, sub: result._id.toString() }
     return {
       message: 'User registered successfully',
-      access_token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload),
       user: {
         id: result._id.toString(),
         username: result.username,
