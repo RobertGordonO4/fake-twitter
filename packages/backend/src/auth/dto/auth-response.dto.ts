@@ -1,11 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger'
 
 export class UserEntity {
   @ApiProperty({ example: '605c72ef2970e3001f5565a1', description: 'User unique ID' })
-  _id: string; // Or id: string, if you use that
+  _id: string // Or id: string, if you use that
 
   @ApiProperty({ example: 'johndoe', description: 'Username' })
-  username: string;
+  username: string
 
   // Add other properties you return for the user object
   // @ApiProperty({ example: 'john.doe@example.com' })
@@ -18,11 +18,11 @@ export class AuthResponseDto {
     description: 'JWT access token for authentication.',
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
   })
-  accessToken: string;
+  accessToken: string
 
   @ApiProperty({
     description: 'Authenticated user details.',
     type: () => UserEntity, // Use your actual User entity/DTO class here
   })
-  user: UserEntity; // Or whatever your User type/entity is
+  user: UserEntity // Or whatever your User type/entity is
 }

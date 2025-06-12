@@ -1,11 +1,11 @@
 // src/auth/auth.controller.ts
-import { Controller, Request, Post, UseGuards, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
-import { RegisterDto } from './dto/register.dto'; // Assuming this is correctly defined with @ApiProperty
-import { LoginDto } from './dto/login.dto';     // Assuming this is correctly defined with @ApiProperty
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthResponseDto } from './dto/auth-response.dto'; // <--- IMPORT YOUR NEW DTO
+import { Controller, Request, Post, UseGuards, Body, HttpCode, HttpStatus } from '@nestjs/common'
+import { AuthService } from './auth.service'
+import { LocalAuthGuard } from './guards/local-auth.guard'
+import { RegisterDto } from './dto/register.dto' // Assuming this is correctly defined with @ApiProperty
+import { LoginDto } from './dto/login.dto' // Assuming this is correctly defined with @ApiProperty
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { AuthResponseDto } from './dto/auth-response.dto' // <--- IMPORT YOUR NEW DTO
 
 @ApiTags('auth')
 @Controller('auth')
@@ -27,7 +27,7 @@ export class AuthController {
     // loginDto is used by Swagger from @ApiBody
     // req.user is populated by LocalAuthGuard/LocalStrategy
     // Ensure this.authService.login(req.user) returns an object matching AuthResponseDto structure
-    return this.authService.login(req.user);
+    return this.authService.login(req.user)
   }
 
   @Post('register')
@@ -43,6 +43,6 @@ export class AuthController {
   @ApiResponse({ status: 409, description: 'Conflict (e.g., username already exists).' })
   async register(@Body() registerDto: RegisterDto) {
     // Ensure this.authService.register(registerDto) returns an object matching AuthResponseDto structure
-    return this.authService.register(registerDto);
+    return this.authService.register(registerDto)
   }
 }

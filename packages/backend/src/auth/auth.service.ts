@@ -18,24 +18,20 @@ export class AuthService {
     pass: string
   ): Promise<Omit<UserDocument, 'passwordHash'> | null> {
     const user = await this.usersService.findOneByUsername(username)
+
     if (user && user.passwordHash && (await bcrypt.compare(pass, user.passwordHash))) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { passwordHash, ...result } = user.toObject() // Or user if not Mongoose doc
+      const { passwordHash, ...result } = user.toObject()
       return result
     }
     return null
   }
 
-  async login(loginDto: LoginDto) {
-    const user = await this.validateUser(loginDto.username, loginDto.password)
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials')
-    }
-    const payload = { username: user.username, sub: user._id.toString() } // _id from Mongoose
+  async login(user: Omit<UserDocument, 'passwordHash'>) {
+    // User is already validated by LocalStrategy, just generate JWT
+    const payload = { username: user.username, sub: user._id.toString() }
     return {
       accessToken: this.jwtService.sign(payload),
       user: {
-        // Send some user info back, exclude sensitive data
         id: user._id.toString(),
         username: user.username,
       },
@@ -47,12 +43,10 @@ export class AuthService {
     if (existingUser) {
       throw new ConflictException('Username already exists')
     }
-    // Password hashing is handled by the pre-save hook in UserSchema
+
     const user = await this.usersService.create(registerDto)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...result } = user.toObject()
 
-    // Optionally log the user in directly after registration
     const payload = { username: result.username, sub: result._id.toString() }
     return {
       message: 'User registered successfully',
