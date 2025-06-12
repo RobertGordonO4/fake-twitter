@@ -1,17 +1,13 @@
-import { Module } from '@nestjs/common'
-import { MongooseModule } from '@nestjs/mongoose'
-import { PostsService } from './posts.service'
-import { PostsController } from './posts.controller'
-import { Post, PostSchema } from './schemas/post.schema'
-// AuthModule might be needed if you protect routes at module level or need user info
-// import { AuthModule } from '../auth/auth.module';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PostsService } from './posts.service';
+import { PostsController } from './posts.controller';
+import { Post } from './entities/post.entity';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
-    // AuthModule, // If JWT guard or user info is needed directly in this module
-  ],
+  imports: [TypeOrmModule.forFeature([Post])],
   controllers: [PostsController],
   providers: [PostsService],
+  exports: [PostsService], // Export if needed by other modules
 })
 export class PostsModule {}

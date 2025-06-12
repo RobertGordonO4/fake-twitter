@@ -1,26 +1,27 @@
-import { Module } from '@nestjs/common'
-import { MongooseModule } from '@nestjs/mongoose'
-import { ConfigModule, ConfigService } from '@nestjs/config'
-import { PostsModule } from './posts/posts.module'
-import { UsersModule } from './users/users.module'
-import { AuthModule } from './auth/auth.module'
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { PostsModule } from './posts/posts.module';
+import { getDatabaseConfig } from './config/database.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // Makes ConfigModule available globally
-      envFilePath: '.env', // Specify your .env file
+      isGlobal: true,
+      envFilePath: '.env',
     }),
-    MongooseModule.forRootAsync({
+    TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URI'),
-      }),
+      useFactory: getDatabaseConfig,
       inject: [ConfigService],
     }),
-    PostsModule,
     AuthModule,
     UsersModule,
+    PostsModule,
   ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

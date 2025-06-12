@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, UseGuards, Req } from '@nestjs/common'
-import { PostsService } from './posts.service'
-import { CreatePostDto } from './dto/create-post.dto'
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { Post as PostEntity } from './schemas/post.schema' // Import the schema class
+import { Controller, Get, Post, Body, Param, Delete, Patch, UseGuards, Req } from '@nestjs/common';
+import { PostsService } from './posts.service';
+import { CreatePostDto } from './dto/create-post.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Post as PostEntity } from './entities/post.entity'; // Import the entity
 
 @ApiTags('posts')
 @Controller('posts')
@@ -21,16 +21,15 @@ export class PostsController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   create(@Body() createPostDto: CreatePostDto, @Req() req) {
-    // req.user contains { userId, username } from JwtStrategy
-    console.log('User creating post:', req.user) // You might associate post with user later
-    return this.postsService.create(createPostDto)
+    console.log('User creating post:', req.user); // You might associate post with user later
+    return this.postsService.create(createPostDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all posts' })
   @ApiResponse({ status: 200, description: 'List of all posts.', type: [PostEntity] })
   findAll() {
-    return this.postsService.findAll()
+    return this.postsService.findAll();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -41,7 +40,7 @@ export class PostsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Post not found.' })
   likePost(@Param('id') id: string) {
-    return this.postsService.likePost(id)
+    return this.postsService.likePost(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -52,6 +51,6 @@ export class PostsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Post not found.' })
   remove(@Param('id') id: string) {
-    return this.postsService.remove(id)
+    return this.postsService.remove(id);
   }
 }

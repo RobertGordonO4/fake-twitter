@@ -1,50 +1,54 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
-import { Post, PostDocument } from './schemas/post.schema'
-import { CreatePostDto } from './dto/create-post.dto'
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Post } from './entities/post.entity';
+import { CreatePostDto } from './dto/create-post.dto';
 
 @Injectable()
 export class PostsService {
-  constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
+  constructor(
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
+  ) {}
 
-  async create(createPostDto: CreatePostDto): Promise<PostDocument> {
-    const newPost = new this.postModel(createPostDto)
-    return newPost.save()
+  async create(createPostDto: CreatePostDto): Promise<Post> {
+    const newPost = this.postRepository.create(createPostDto);
+    return this.postRepository.save(newPost);
   }
 
-  async findAll(): Promise<PostDocument[]> {
-    return this.postModel.find().sort({ createdAt: -1 }).exec() // Sort by newest
+  async findAll(): Promise<Post[]> {
+    return this.postRepository.find({
+      order: { createdAt: 'DESC' }, // Sort by newest first
+    });
   }
 
-  async findOne(id: string): Promise<PostDocument> {
-    const post = await this.postModel.findById(id).exec()
+  async findOne(id: string): Promise<Post> {
+    const post = await this.postRepository.findOne({ where: { id } });
     if (!post) {
-      throw new NotFoundException(`Post with ID "${id}" not found`)
+      throw new NotFoundException(`Post with ID "${id}" not found`);
     }
-    return post
+    return post;
   }
 
-  async likePost(id: string): Promise<PostDocument> {
-    const post = await this.postModel
-      .findByIdAndUpdate(
-        id,
-        { $inc: { likes: 1 } }, // Increment likes by 1
-        { new: true } // Return the updated document
-      )
-      .exec()
-
+  async likePost(id: string): Promise<Post> {
+    // First check if post exists
+    const post = await this.postRepository.findOne({ where: { id } });
     if (!post) {
-      throw new NotFoundException(`Post with ID "${id}" not found`)
+      throw new NotFoundException(`Post with ID "${id}" not found`);
     }
-    return post
+
+    // Increment likes
+    await this.postRepository.increment({ id }, 'likes', 1);
+
+    // Return updated post
+    return this.postRepository.findOne({ where: { id } });
   }
 
   async remove(id: string): Promise<{ deleted: boolean; message?: string }> {
-    const result = await this.postModel.deleteOne({ _id: id }).exec()
-    if (result.deletedCount === 0) {
-      throw new NotFoundException(`Post with ID "${id}" not found`)
+    const result = await this.postRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Post with ID "${id}" not found`);
     }
-    return { deleted: true, message: 'Post deleted successfully' }
+    return { deleted: true, message: 'Post deleted successfully' };
   }
 }

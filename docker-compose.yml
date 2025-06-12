@@ -1,30 +1,40 @@
 services:
-  mongo:
-    image: mongo:latest
-    container_name: mongo_db
+  mariadb:
+    image: mariadb:11
+    container_name: mariadb_db
     ports:
-      - "27017:27017"
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: twitter_clone
+      MYSQL_USER: twitter_user
+      MYSQL_PASSWORD: twitter_password
     volumes:
-      - mongo_data:/data/db
+      - mariadb_data:/var/lib/mysql
+      # Optional: Add init scripts
+      # - ./init-scripts:/docker-entrypoint-initdb.d
     networks:
       - app-network
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
   backend:
     build:
       context: .
       dockerfile: ./packages/backend/.docker/Dockerfile
     container_name: twitter_clone_backend
-    # The command is now run from the Dockerfile's CMD
     ports:
       - "3001:3001"
     depends_on:
-      - mongo
+      - mariadb
     env_file:
       - ./packages/backend/.env
     environment:
       - NODE_ENV=development
-      - MONGO_URI=mongodb://mongo:27017/twitter_clone
-    # NO VOLUMES FOR SOURCE CODE
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USERNAME=twitter_user
+      - DB_PASSWORD=twitter_password
+      - DB_NAME=twitter_clone
     networks:
       - app-network
 
@@ -39,10 +49,8 @@ services:
       - backend
     environment:
       - NODE_ENV=development
-      # These are still needed for Create React App
       - WDS_SOCKET_PORT=0
       - DANGEROUSLY_DISABLE_HOST_CHECK=true
-    # NO VOLUMES FOR SOURCE CODE
     networks:
       - app-network
 
@@ -51,4 +59,4 @@ networks:
     driver: bridge
 
 volumes:
-  mongo_data:
+  mariadb_data:
