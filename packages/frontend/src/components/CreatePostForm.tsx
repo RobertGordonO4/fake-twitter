@@ -23,7 +23,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onPostCreated }) => {
     const createPostDto: CreatePostDto = { content };
 
     try {
-      await postsApiClient.postsControllerCreate(createPostDto);
+      await postsApiClient.createPost(createPostDto);
       setContent('');
       onPostCreated();
     } catch (err: any) {

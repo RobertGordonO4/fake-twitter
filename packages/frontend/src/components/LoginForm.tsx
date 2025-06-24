@@ -17,7 +17,7 @@ const LoginForm: React.FC = () => {
     setError(null);
     const loginDto: LoginDto = { username, password };
     try {
-      const response = await authApiClient.authControllerLogin(loginDto);
+      const response = await authApiClient.login(loginDto);
 
       // THIS PART WILL CHANGE AFTER BACKEND FIX & REGENERATION
       const data = response.data as AuthResponse | undefined; // Temporary
@@ -26,7 +26,6 @@ const LoginForm: React.FC = () => {
         login(data.accessToken, data.user as User);
         navigate('/');
       } else {
-        console.warn('Login response did not contain expected data. Backend OpenAPI spec might need update for authControllerLogin response type.');
         setError('Login successful, but user data missing. Please contact support or try again.');
       }
     } catch (err: any) {

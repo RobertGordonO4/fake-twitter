@@ -1,36 +1,34 @@
 {
   "compilerOptions": {
-    "target": "es5", // Or "es6", "es2016", etc. "es5" is a safe default for wide browser compatibility.
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true, // Allow JavaScript files to be compiled
-    "skipLibCheck": true, // Skip type checking of all declaration files (*.d.ts)
-    "esModuleInterop": true, // Enables emit interoperability between CommonJS and ES Modules
-    "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export
-    "strict": true, // Enable all strict type-checking options
-    "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file.
-    "noFallthroughCasesInSwitch": true, // Report errors for fallthrough cases in switch statement
-    "module": "esnext", // Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'esnext'
-    "moduleResolution": "node", // Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6)
-    "resolveJsonModule": true, // Include modules imported with .json extension
-    "isolatedModules": true, // Transpile each file as a separate module (similar to 'ts.transpileModule')
-    "noEmit": true, // Do not emit output (CRA handles this with Babel)
-    "jsx": "react-jsx", // Specify JSX code generation: 'preserve', 'react-native', 'react', or 'react-jsx'
-    "baseUrl": "src" // Base directory to resolve non-absolute module names.
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Path mapping */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    /* Vite support */
+    "types": ["vite/client"]
   },
-  "include": [
-    "src" // *** IMPORTANT: Only compile files in the src directory ***
-  ],
-  "exclude": [
-    "node_modules",
-    "build",
-    "scripts",
-    "acceptance-tests",
-    "webpack",
-    "jest",
-    "src/setupTests.ts" // Or .js if you have one
-  ]
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -1,53 +1,143 @@
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
-import {
-  Configuration,
-  PostsApi,
-  AuthApi,
-  // Types ACTUALLY exported by the generated api.ts
-  CreatePostDto,
-  LoginDto,
-  Post,
-  RegisterDto
-  // User and AuthResponse are NOT exported, so they cannot be imported here yet.
-} from './api';
+// Import the generated types and API functions
+export * from './api/Api';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+// Import specific types for re-export with clean names
+import type { 
+  CreatePostDto, 
+  LoginDto, 
+  Post, 
+  RegisterDto, 
+  UserEntity, 
+  AuthResponseDto 
+} from './api/Api';
 
-// Function that dynamically gets the token each time it's called
-const getAccessToken = (): string => {
-  const token = localStorage.getItem('token');
-  return token || ''; // Return empty string instead of null/undefined
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
+// Create axios instance with base configuration
+const createApiInstance = (): AxiosInstance => {
+  const instance = axios.create({
+    baseURL: API_BASE_URL,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  // Add request interceptor to include auth token
+  instance.interceptors.request.use(
+    (config) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => Promise.reject(error)
+  );
+
+  // Add response interceptor to handle token expiry
+  instance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 401) {
+        // Token expired or invalid - just clear it
+        localStorage.removeItem('token');
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  return instance;
 };
 
-// Create configuration with a function instead of a static value
-const apiConfiguration = new Configuration({
-  basePath: API_BASE_URL,
-  accessToken: getAccessToken, // Pass the function itself, not the result
-});
+// Export the configured axios instance
+export const apiClient = createApiInstance();
 
-export const postsApiClient = new PostsApi(apiConfiguration);
-export const authApiClient = new AuthApi(apiConfiguration);
-
-// Re-export the DTOs and Model types that ARE available.
-export type {
-  CreatePostDto,
-  LoginDto,
-  Post,
-  RegisterDto
-  // We cannot export User or AuthResponse yet as they are not in api.ts
+// Helper function to make API calls with the configured client
+// Returns data in the old format: { data: responseData }
+export const makeApiCall = async <T>(config: AxiosRequestConfig): Promise<{ data: T }> => {
+  const response = await apiClient(config);
+  return { data: response.data }; // Wrap in data property for backward compatibility
 };
 
-// TEMPORARY: Define placeholder types for User and AuthResponse until backend spec is fixed
-// This will allow the frontend to compile, but login/register won't work as expected.
-export interface User {
-  // Define properties based on what your backend *should* send for a user
-  id: string; // Changed from _id to id to match your backend response
-  username: string;
-  // email?: string; etc.
-}
+// Helper for direct data access (new style)
+export const makeDirectApiCall = async <T>(config: AxiosRequestConfig): Promise<T> => {
+  const response = await apiClient(config);
+  return response.data;
+};
 
-export interface AuthResponse {
-  // Define properties based on what your backend *should* send on login/register
-  accessToken: string;
-  user: User;
-}
+// Auth API functions
+export const authApi = {
+  login: async (loginDto: LoginDto): Promise<{ data: AuthResponseDto }> => {
+    return makeApiCall({
+      method: 'POST',
+      url: '/api/auth/login',
+      data: loginDto,
+    });
+  },
+  
+  register: async (registerDto: RegisterDto): Promise<{ data: AuthResponseDto }> => {
+    return makeApiCall({
+      method: 'POST',
+      url: '/api/auth/register',
+      data: registerDto,
+    });
+  },
+};
+
+// Posts API functions
+export const postsApi = {
+  getAllPosts: async (): Promise<{ data: Post[] }> => {
+    return makeApiCall({
+      method: 'GET',
+      url: '/api/posts',
+    });
+  },
+  
+  createPost: async (createPostDto: CreatePostDto): Promise<{ data: Post }> => {
+    return makeApiCall({
+      method: 'POST',
+      url: '/api/posts',
+      data: createPostDto,
+    });
+  },
+  
+  likePost: async (id: string): Promise<{ data: Post }> => {
+    return makeApiCall({
+      method: 'PATCH',
+      url: `/api/posts/${id}/like`,
+    });
+  },
+  
+  deletePost: async (id: string): Promise<{ data: void }> => {
+    return makeApiCall({
+      method: 'DELETE',
+      url: `/api/posts/${id}`,
+    });
+  },
+};
+
+// Backward compatibility exports (if your components still use the old names)
+export const postsApiClient = {
+  ...postsApi,
+  // Old openapi-generator-cli method names → new method names
+  postsControllerCreate: postsApi.createPost,
+  postsControllerFindAll: postsApi.getAllPosts,
+  postsControllerLike: postsApi.likePost,
+  postsControllerRemove: postsApi.deletePost,
+};
+
+export const authApiClient = {
+  ...authApi,
+  // Old openapi-generator-cli method names → new method names  
+  authControllerLogin: authApi.login,
+  authControllerRegister: authApi.register,
+};
+
+// Type aliases for backward compatibility
+export type User = UserEntity;
+export type AuthResponse = AuthResponseDto;
+
+// Re-export clean type names  
+export type { CreatePostDto, LoginDto, RegisterDto, Post, UserEntity, AuthResponseDto };

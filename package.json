@@ -1,12 +1,13 @@
 {
-  "name": "fake-twitter",
+  "name": "nest-poc-app",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "pnpm --filter \"./packages/**\" --parallel dev",
     "build": "pnpm --filter \"./packages/**\" build",
-    "start:docker": "docker-compose up --build",
-    "stop:docker": "docker-compose down"
+    "dev:backend": "pnpm --filter backend dev",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "start": "pnpm --filter \"./packages/**\" start"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

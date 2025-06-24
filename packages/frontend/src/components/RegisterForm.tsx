@@ -23,7 +23,7 @@ const RegisterForm: React.FC = () => {
     try {
       // This will change once backend spec is fixed.
       // The response will then contain AuthResponse data.
-      const response = await authApiClient.authControllerRegister(registerDto);
+      const response = await authApiClient.register(registerDto);
 
       // THIS PART WILL CHANGE AFTER BACKEND FIX & REGENERATION
       // For now, to make it compile, we assume response.data might be castable.
@@ -35,7 +35,6 @@ const RegisterForm: React.FC = () => {
         navigate('/');
       } else {
         // This else block will likely be hit until backend is fixed
-        console.warn('Register response did not contain expected data. Backend OpenAPI spec might need update for authControllerRegister response type.');
         setError('Registration seemed successful, but login data was not returned. Please try logging in.');
         // Potentially navigate to login page or show a specific message
       }

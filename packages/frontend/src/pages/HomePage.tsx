@@ -13,7 +13,7 @@ const HomePage: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await postsApiClient.postsControllerFindAll();
+      const response = await postsApiClient.getAllPosts();
       setPosts(response.data);
     } catch (err: any) {
       console.error('Failed to fetch posts:', err);
@@ -33,7 +33,7 @@ const HomePage: React.FC = () => {
 
   const handleLikePost = async (postId: string) => {
     try {
-      await postsApiClient.postsControllerLikePost(postId);
+      await postsApiClient.likePost(postId);
       fetchPosts(); // Re-fetch to update like count
     } catch (err: any) {
       console.error('Failed to like post:', err.response?.data?.message || err.message);
@@ -44,7 +44,7 @@ const HomePage: React.FC = () => {
   const handleDeletePost = async (postId: string) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
       try {
-        await postsApiClient.postsControllerRemove(postId);
+        await postsApiClient.deletePost(postId);
         fetchPosts(); // Re-fetch to update the list
       } catch (err: any) {
         console.error('Failed to delete post:', err.response?.data?.message || err.message);
