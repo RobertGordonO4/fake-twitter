@@ -1,6 +1,6 @@
-# Twitter Clone Monorepo
+# Nest PoC App Monorepo
 
-A simplified Twitter-like application built with a modern React frontend, NestJS backend, and MariaDB database. Structured as a pnpm monorepo.
+A simplified Twitter-like Nest PoC application built with a modern React frontend, NestJS backend, and MariaDB database. Structured as a pnpm monorepo.
 
 ## Features
 
@@ -33,7 +33,7 @@ A simplified Twitter-like application built with a modern React frontend, NestJS
 
 ```bash
 git clone <your-repo-url>
-cd twitter-clone-monorepo
+cd <local_repo_folder>
 pnpm install
 ```
 
@@ -42,9 +42,9 @@ pnpm install
 Ensure MariaDB is running and create the database:
 
 ```sql
-CREATE DATABASE twitter_clone CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'twitter_user'@'localhost' IDENTIFIED BY 'twitter_password';
-GRANT ALL PRIVILEGES ON twitter_clone.* TO 'twitter_user'@'localhost';
+CREATE DATABASE nest_poc_app CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'nest_poc_user'@'localhost' IDENTIFIED BY 'nest_poc_password';
+GRANT ALL PRIVILEGES ON nest_poc_app.* TO 'nest_poc_user'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
@@ -89,7 +89,7 @@ pnpm --filter frontend generate-api
 ## Package Structure
 
 ```
-twitter-clone-monorepo/
+/
 ├── packages/
 │   ├── frontend/     # React + Vite app
 │   └── backend/      # NestJS API

@@ -35,9 +35,9 @@ Create `.env` file in `packages/backend/`:
 # Database Configuration
 DB_HOST=localhost
 DB_PORT=3306
-DB_USERNAME=twitter_user
-DB_PASSWORD=twitter_password
-DB_NAME=twitter_clone
+DB_USERNAME=nest_poc_user
+DB_PASSWORD=nest_poc_password
+DB_NAME=nest_poc_app
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
@@ -178,7 +178,7 @@ pnpm migration:revert
 Configured to allow requests from frontend (`http://localhost:5173`).
 
 ### Swagger Configuration
-- **Title:** Twitter Clone API
+- **Title:** Nest PoC App API
 - **Version:** 1.0
 - **Tags:** Auth, Posts
 - **Security:** JWT Bearer token
@@ -195,7 +195,7 @@ Configured to allow requests from frontend (`http://localhost:5173`).
 
 ```bash
 # Check if MariaDB is running and accessible
-mysql -h localhost -u twitter_user -p twitter_clone
+mysql -h localhost -u nest_poc_user -p nest_poc_app
 
 # Verify database credentials in .env file
 # Ensure database and user exist

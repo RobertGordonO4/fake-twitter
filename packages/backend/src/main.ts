@@ -22,8 +22,8 @@ async function bootstrap() {
   )
 
   const config = new DocumentBuilder()
-    .setTitle('Twitter Clone API')
-    .setDescription('API for a simple Twitter clone application')
+    .setTitle('Nest PoC App API')
+    .setDescription('API for a simple Nest PoC application')
     .setVersion('1.0')
     .addBearerAuth() // For JWT
     .build()

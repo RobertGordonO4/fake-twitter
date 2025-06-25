@@ -39,7 +39,7 @@
   color: white;
   border: none;
   padding: 8px 16px;
-  border-radius: 20px; /* More Twitter-like */
+  border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s;
